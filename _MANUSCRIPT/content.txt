@@ -1,0 +1,469 @@
+# Amazon Business Growth Machine: The Complete Blueprint
+## How to Leverage Brand Analytics and AI to Systematically Outperform the Market
+
+---
+
+# SECTION I: THE DATA ENGINE
+
+---
+
+## Chapter 1: Beyond ACoS
+
+### Why Brand Analytics Is the New North Star for Amazon Sellers
+
+For years, Amazon advertising was governed by a single metric: ACoS. Sellers optimised bids, pruned keywords, and celebrated when ACoS dropped below their target threshold. The problem? ACoS tells you how efficiently you spent money — it tells you nothing about whether you are *winning*.
+
+Consider this scenario: your ACoS is a pristine 15 %, and your campaigns are "profitable." Meanwhile, a competitor has quietly captured 40 % of purchase share on the five highest-volume keywords in your category. They are building brand recognition, accumulating reviews, and compressing your organic rank. By the time your ACoS dashboard reflects the damage, the market has already shifted.
+
+**Brand Analytics changes the game.** Amazon's Brand Analytics suite — available to brand-registered sellers — exposes the data that ACoS hides:
+
+- **Search Query Performance (SQP):** How often shoppers search for a keyword, how many times *your* product is shown vs. the market, and crucially, what share of purchases you capture.
+- **Search Catalog Performance (SCP):** The full funnel from impressions through clicks to cart-adds and purchases — for your catalogue and the market.
+- **Top Search Terms:** The raw popularity ranking of search terms within your category.
+
+When you shift from "How cheaply can I get a click?" to "What share of the market's buying behaviour do I own?", every decision changes. Bid strategy becomes market-share strategy. Budget allocation becomes a growth investment. Keyword targeting becomes competitive intelligence.
+
+**The core thesis of this book:** An Amazon business is a machine. Feed it the right data, connect the right feedback loops, and it compounds. ACoS was the speedometer. Brand Analytics is the GPS.
+
+---
+
+## Chapter 2: The Golden Trio
+
+### Search Query Performance, Search Catalog Performance, and PPC Search Terms
+
+The Growth Machine runs on three data feeds. Each one is powerful alone; together, they create a three-dimensional view of your market position.
+
+#### 2.1 Search Query Performance (SQP)
+
+SQP answers the question: *"For a given search term, what slice of the market does my brand own?"*
+
+Key metrics:
+- **Search Volume** — total searches for a keyword in the period.
+- **Impressions (Total vs. Brand)** — how many times *any* product appeared vs. *your* product.
+- **Clicks (Total vs. Brand)** — who got the click.
+- **Cart Adds (Total vs. Brand)** — who got to the cart.
+- **Purchases (Total vs. Brand)** — who closed the sale.
+- **Purchase Share** — your brand's purchases ÷ total purchases. This is the single most important metric in the Growth Machine.
+
+**RYG Framework:**
+- 🟢 **Green:** Purchase Share ≥ 15 % — you are a meaningful player on this keyword.
+- 🟡 **Yellow:** Purchase Share 5 %–14 % — opportunity zone. You are visible but not converting proportionally.
+- 🔴 **Red:** Purchase Share < 5 % — the market is buying here and you are invisible.
+
+#### 2.2 Search Catalog Performance (SCP)
+
+SCP flips the lens. Instead of starting from a keyword, it starts from your ASIN and shows the *full funnel*:
+
+Impressions → Clicks → Cart Adds → Purchases.
+
+The power of SCP is in diagnosing *where the funnel breaks*:
+- High impressions, low clicks → your main image or title needs work.
+- High clicks, low cart adds → your price or reviews are losing the comparison.
+- High cart adds, low purchases → a competitor is winning the final "buy" decision (often on delivery speed or coupon).
+
+#### 2.3 PPC Search Terms Report
+
+Your Sponsored Products campaigns generate a search terms report that shows the *actual queries* shoppers typed before clicking your ad. This is the bridge between paid and organic:
+
+- **Attributed Sales:** Revenue generated from this search term via ads.
+- **CPC:** What you paid per click.
+- **Conversion Rate:** Clicks to orders.
+
+**The Golden Trio synergy:** SQP tells you where the market is buying. SCP tells you where your funnel leaks. PPC Search Terms tell you what you are paying for and whether it is working. Cross-referencing all three is where the machine starts generating actionable intelligence.
+
+---
+
+## Chapter 3: Setting Up Your Machine
+
+### Connecting the NeonPanel MCP to Your Business Brain
+
+The NeonPanel MCP (Model Context Protocol) server is the bridge between your Amazon data and an AI agent running in your IDE (VSCode with GitHub Copilot). Instead of logging into multiple dashboards, downloading CSVs, and building pivot tables, you issue natural-language commands that call structured tools.
+
+**Setup Steps:**
+
+1. **Integration:** Connect your Amazon Seller Central and Amazon Advertising accounts through NeonPanel. This syncs your Brand Analytics, advertising reports, financial statements, and inventory data into a unified data layer.
+
+2. **Company & Profile Selection:** NeonPanel organises data by *Company* (your seller entity) and *Profile* (your advertising profile per marketplace). Use `list_companies` and `list_selling_partner_accounts` to verify your connections.
+
+3. **ASIN Catalogue:** Use `lookup_asin_catalog` to map your Parent ASINs to their child variations. This is the foundation — every analysis starts with knowing which ASINs belong to which product family.
+
+4. **MCP in VSCode:** With the NeonPanel MCP server configured, your AI agent can call any tool directly. You prompt in natural language; the agent translates to structured tool calls; results come back as data you can analyse, chart, or feed into the next step.
+
+**The mental model:** Think of NeonPanel as the *nervous system* of your Growth Machine. It connects the sensory inputs (Brand Analytics, PPC, Financials) to the brain (your AI agent) to the muscles (bid changes, budget shifts, restock orders).
+
+---
+
+# SECTION II: MARKETING & ADVERTISING ENRICHMENT
+
+---
+
+## Chapter 4: The Keyword Gap Analysis
+
+### Finding High-Volume Terms Where Your Brand Share Is < 10 %
+
+The "Keyword Gap" is the distance between where the market is buying and where your brand is showing up. It is the single most actionable output of the Growth Machine.
+
+#### The Method
+
+**Step 1: Pull SQP data.**
+Using `analyze_search_query_performance`, we retrieve all search terms where your ASIN appeared. The tool returns search volume, impression share, click share, and purchase share — along with RYG (Red/Yellow/Green) classifications.
+
+**Step 2: Filter for the Gap.**
+We isolate keywords matching two criteria:
+- **High Search Volume:** Keywords with significant monthly search frequency (typically > 5,000 searches).
+- **Low Brand Share:** Keywords where your Purchase Share is below 10 %.
+
+These are keywords where customers are actively searching and buying, but not buying *from you*.
+
+**Step 3: Diagnose the funnel.**
+For each gap keyword, use `get_keyword_funnel_metrics` to see exactly where you lose:
+- Are you not being shown? (Impression gap)
+- Are you shown but not clicked? (Click-through gap → listing quality issue)
+- Are you clicked but not bought? (Conversion gap → price/reviews/content issue)
+
+**Step 4: Cross-reference momentum.**
+Use `get_search_term_momentum` to check if the keyword is accelerating, stable, or declining. There is no point attacking a keyword whose volume is falling 20 % month-over-month.
+
+**Step 5: Check competitive density.**
+Use `get_competitive_landscape` to see who the top 3 products are on each gap keyword. If the leader has weak purchase share (< 20 %), the keyword is "contestable." If one product dominates with > 50 %, you need a differentiated angle to break through.
+
+#### The Output
+
+A prioritised list of keywords ranked by:
+1. Search volume (market size)
+2. Gap size (your share vs. available share)
+3. Momentum (growing vs. declining)
+4. Contestability (weak leader vs. dominant player)
+
+This list directly feeds your PPC targeting, listing optimisation, and A+ Content strategy.
+
+---
+
+## Chapter 5: Advertising vs. Organic
+
+### Proving if PPC Is "Cannibalising" or "Growing" Your Market Share
+
+One of the most expensive mistakes in Amazon advertising is paying for clicks you would have earned for free. The flip side: one of the most expensive mistakes is *not* paying for clicks on terms where organic rank is too weak to convert.
+
+#### The Incrementality Framework
+
+We compare two data sources:
+- **SQP Click Share** — what percentage of clicks on a keyword go to your brand organically.
+- **PPC Search Terms** — what your ads are spending and generating on the same keyword.
+
+**Scenario 1: The "Waste" Scenario**
+- Organic click share is high (e.g., 70 %) on a branded or dominated keyword.
+- PPC spend is also high on the same keyword.
+- **Diagnosis:** You are paying for clicks that would have happened anyway. The incremental value of PPC on this term is low.
+- **Action:** Reduce bids or pause ad groups on these terms. Redirect budget to gap keywords.
+
+**Scenario 2: The "Growth" Scenario**
+- Organic click share is low (e.g., < 15 %) on a high-volume keyword.
+- PPC is driving significant attributed sales.
+- **Diagnosis:** Without ads, you would be invisible on this term. PPC is genuinely incremental.
+- **Action:** Maintain or increase spend. Monitor whether sustained PPC presence begins building organic rank (the "flywheel effect").
+
+**Scenario 3: The "Flywheel" Scenario**
+- You started with low organic share, invested heavily in PPC, and now organic share is rising.
+- **Diagnosis:** PPC investment is translating to organic ranking improvement.
+- **Action:** Gradually reduce PPC spend as organic takes over. Track the crossover point.
+
+#### Incrementality Score
+
+```
+Incrementality = (Paid Clicks / Total Brand Clicks) × (1 - Organic Rank Factor)
+```
+
+Where Organic Rank Factor = Brand Click Share from SQP. A score approaching 1.0 means PPC is almost entirely incremental value. A score near 0 means you are mostly cannibalising organic traffic.
+
+---
+
+## Chapter 6: The Search Term Goldmine
+
+### Merging PPC Reports with Top Search Terms to Find Blue Oceans
+
+The most profitable keywords are the ones your competitors have not found yet. The "Goldmine" analysis finds them systematically.
+
+#### Discovery Logic: The Category Gap
+
+A keyword appears in the top search terms for your category (high buyer intent, high volume) but has **zero spend** in your PPC campaigns. You are not advertising on it. Possibly, you are not even indexed for it.
+
+**How to find them:**
+1. Pull `analyze_search_query_performance` to get all keywords where your ASIN has any presence.
+2. Pull `analyze_search_terms` from your advertising data to get all keywords you are actively bidding on.
+3. The *difference* between the two sets is your Blue Ocean list — terms the market cares about that you are not contesting.
+
+#### Efficiency Signal: High Purchase Share, Low CPC
+
+Some keywords deliver outsized value:
+- The purchase share in SQP is high (the market is buying on this term).
+- But the CPC in your PPC data is low (competition is not bidding it up).
+
+These are arbitrage opportunities. They exist because most sellers optimise on ROAS within their ad console and never look at market-level purchase data. The Growth Machine exploits this information asymmetry.
+
+#### Cross-Sell Discovery
+
+Use `get_cross_sell_opportunities` to find keywords where shoppers who searched for Product A frequently also bought Product B. If Product B is yours but you are not targeting Product A's keywords, you have found an untapped channel.
+
+---
+
+# SECTION III: THE OPERATIONS & PROFITABILITY GEARBOX
+
+---
+
+## Chapter 7: True Unit Economics
+
+### Using Landed Cost to Set Your Maximum Aggressive Bid
+
+Amazon's Seller Central shows you revenue and fees. Your advertising console shows you ad spend. Neither knows your *actual* cost of goods — your manufacturing cost, freight, duties, inspection fees, and inland logistics. Until you unify all three layers, your "profitability" number is a fiction.
+
+#### The True Contribution Margin Formula
+
+```
+True Contribution Margin = Selling Price - FBA Fees - Referral Commission - Landed Cost
+```
+
+Where **Landed Cost** = Manufacturing + Sea Freight + Duties + Insurance + Inspection + Inland Transport, allocated per unit.
+
+Use `get_inventory_landed_cost` to pull the landed cost per SKU. Use `analyze_profit_and_loss` to see the full financial picture including all Amazon fees, FBA charges, and advertising spend.
+
+#### Setting Your Maximum Aggressive Bid
+
+Once you know the True Contribution Margin, you can calculate the absolute maximum you can spend on advertising per unit and still break even:
+
+```
+Max CPC = True Contribution Margin × Conversion Rate
+```
+
+If your margin is $8.00 and your conversion rate is 12 %, your break-even CPC is $0.96. Bidding above this on any keyword means you are paying for market share — which may be strategic, but must be conscious.
+
+#### FIFO Cost Analysis
+
+Use `analyze_fifo_cogs` to understand how your cost of goods changes over time as different inventory batches (with different landed costs) are sold through. This is critical for accurate margin tracking — a shipment with high freight costs inflates your COGS until it sells through.
+
+---
+
+## Chapter 8: Stockout Prevention
+
+### Ensuring Your Growth Machine Does Not Run Out of Fuel
+
+The worst outcome of a successful advertising campaign is a stockout. You spend money driving velocity, earn organic rank, build momentum — and then you run out of inventory. Amazon punishes stockouts brutally: your organic rank drops, your listing may lose the Buy Box, and competitors absorb the traffic you built.
+
+#### The Marketing Throttle
+
+The Growth Machine has a built-in throttle tied to inventory health:
+
+| Days of Supply (DOS) | Mode | Action |
+|---|---|---|
+| > 45 days | 🟢 Aggressive | Full budget, competitive bids, launch new keywords |
+| 20–45 days | 🟡 Maintenance | Hold current spend, no new keyword launches |
+| < 20 days | 🔴 Conservation | Reduce bids 30 %, pause discovery campaigns |
+| < 10 days | ⛔ Emergency | Pause all ads except branded terms |
+
+**How to check:**
+- Use `list_stock_replenishment_risk_items` to identify SKUs at risk of stocking out.
+- Use `list_fba_replenishment_candidates` to see what needs to be sent to FBA.
+- Use `analyze_sales_velocity` to validate the current burn rate.
+
+#### Lead-Time Buffer
+
+Use `list_product_logistics_parameters` to pull the lead time for each product (manufacturing time + transit time + FBA receiving time). The "Last Possible Date" to launch an aggressive campaign is:
+
+```
+Last Launch Date = Estimated Stockout Date - Lead Time - Safety Buffer (7 days)
+```
+
+If your stockout date is May 15, your lead time is 45 days, and your buffer is 7 days, you must have placed a PO by March 24 to sustain aggressive marketing.
+
+Use `list_po_placement_candidates` to see which POs are recommended now, and `shipment_arrival_oracle` to track inbound shipments.
+
+---
+
+# SECTION IV: THE WEEKLY GOVERNANCE LOOP
+
+---
+
+## Chapter 9: The Weekly Governance Ritual
+
+### Transforming Data into a Perpetual Motion Machine
+
+A Growth Machine is useless if you only run it once. The power is in the *loop* — a weekly cadence that turns data into decisions, decisions into actions, and actions into measurable outcomes.
+
+#### The Ritual: Five Steps, Every Monday
+
+```
+┌─────────────────────────────────────────────────┐
+│                                                   │
+│   1. DATA AUDIT                                   │
+│      ↓                                            │
+│   2. REVIEW LOG (What did last week's             │
+│      actions produce?)                            │
+│      ↓                                            │
+│   3. GENERATE ACTIONS (New opportunities          │
+│      from this week's data)                       │
+│      ↓                                            │
+│   4. EXECUTE TOOLS (Make bid changes,             │
+│      launch keywords, adjust budgets)             │
+│      ↓                                            │
+│   5. WAIT 7 DAYS (Let the data mature)            │
+│      ↓                                            │
+│   ← Back to Step 1                                │
+│                                                   │
+└─────────────────────────────────────────────────┘
+```
+
+**Step 1: Data Audit**
+Run the full data extraction suite (see Practical Workshop). Compare Week-over-Week deltas:
+- Purchase Share: up or down?
+- Click Share: improving or declining?
+- TACoS: tightening or loosening?
+- Inventory health: any items moving to Yellow/Red?
+
+**Step 2: Review Log**
+Pull up the action log from last week. For each action taken (e.g., "Increased bid on keyword X from $0.80 to $1.10"), check:
+- Did purchase share on that keyword increase?
+- Did CPC stay within tolerance?
+- Did organic rank move?
+
+**Step 3: Generate Actions**
+Based on the delta analysis:
+- New gap keywords → add to campaigns.
+- Cannibalisation detected → reduce branded bids.
+- Stockout risk → trigger conservation mode.
+- Funnel leak found → flag for listing optimisation.
+
+**Step 4: Execute**
+Use the MCP tools to implement changes. Log every action with a timestamp and hypothesis.
+
+**Step 5: Wait**
+Amazon's data has a 48–72 hour lag. Meaningful trends emerge over 7 days. Do not react to daily noise.
+
+#### The Feedback Loop
+
+The AI agent is not just executing — it is *learning*. Each cycle:
+- Records the hypothesis ("Increasing bid on keyword X will raise purchase share by 3 %").
+- Records the outcome ("Purchase share moved from 7 % to 9 %").
+- Adjusts future recommendations based on what worked and what did not.
+
+Over time, the machine develops a nuanced understanding of your specific niche: which keywords respond to bid changes, which are price-sensitive, which have seasonal patterns.
+
+---
+
+# SECTION V: THE PERSISTENT BRAIN
+
+---
+
+## Chapter 10: The Experience Engine
+
+### Building Long-Term Memory for Your Growth Machine
+
+A growth machine without memory is a growth *session*. To make it a true engine, you need persistence — a database that stores every action, every hypothesis, and every result so the AI can learn across weeks and months.
+
+#### What to Store
+
+**The Action Log**
+Every bid change, budget shift, keyword addition, and listing change:
+- Timestamp
+- Action type
+- Target (keyword, campaign, ASIN)
+- Before value
+- After value
+- Hypothesis
+
+**The Hypothesis Result**
+After 7 days, the system checks:
+- Did the predicted outcome occur?
+- By how much did the actual result differ from prediction?
+- Confidence score adjustment.
+
+**The Snapshot Archive**
+Weekly snapshots of all key metrics (purchase share, click share, TACoS, inventory DOS) so the machine can detect trends and seasonality over time.
+
+#### Implementation
+
+The NeonPanel data layer already stores historical Brand Analytics data, financial statements, and inventory records. Your governance loop adds the *decision layer* on top:
+- Use session memory (in-conversation notes) for within-session tracking.
+- Use the NeonPanel reporting infrastructure (`list_reports`, `get_report_details`) for historical analysis.
+- Export action logs to your own database (Supabase, Airtable, or a simple spreadsheet) for cross-session persistence.
+
+---
+
+# SECTION VI: THE NEONASPHERA AGENT
+
+---
+
+## Chapter 11: The Master Agent
+
+### System Prompt and Decision Chain
+
+The NeonaSphera Agent is the AI orchestration layer that ties everything together. It is not a chatbot — it is a *decision engine* that follows a strict protocol.
+
+#### System Prompt
+
+```
+You are the NeonPanel Growth Architect. Your objective is systematic 
+expansion of market share while maintaining profitability.
+
+For every analysis:
+1. Start with a data snapshot (Brand Analytics + Advertising + Inventory).
+2. Identify opportunities (Keyword Gaps, Funnel Leaks, Arbitrage).
+3. Verify constraints (Stock levels, Landed Cost, Budget limits).
+4. Generate prioritised actions with explicit hypotheses.
+5. Log everything.
+
+Never recommend spend increases without checking inventory health.
+Never recommend bid reductions without checking competitive landscape.
+Always show the data that supports your recommendation.
+```
+
+#### Decision Chain
+
+```
+SNAPSHOT
+  → Pull SQP, SCP, PPC, Inventory, Financials
+  
+OPPORTUNITY IDENTIFICATION
+  → Keyword Gap Analysis (Ch. 4)
+  → Incrementality Check (Ch. 5)
+  → Blue Ocean Scan (Ch. 6)
+  → Funnel Leak Diagnosis (SCP)
+  
+CONSTRAINT VERIFICATION
+  → Stock Check: DOS per SKU (Ch. 8)
+  → Cost Check: True Contribution Margin (Ch. 7)
+  → Budget Check: Remaining daily/monthly budget
+  
+OUTPUT GENERATION
+  → Prioritised action list
+  → Each action tagged with: keyword, action_type, hypothesis, confidence
+  → Constraint flags (e.g., "⚠️ SKU X has 18 DOS — Conservation Mode")
+```
+
+---
+
+# SECTION VII: PRACTICAL WORKSHOP
+
+---
+
+## Chapter 12: Case Study — Live Data Extraction
+
+### Running the Growth Machine on Your Product
+
+This chapter is the hands-on walkthrough. Open VSCode, ensure your NeonPanel MCP server is connected, and follow the tool call sequence below.
+
+**Prerequisites:**
+- NeonPanel account with Amazon Seller Central integration active.
+- Brand Analytics access (Brand Registry required).
+- At least one advertising profile connected.
+- Your target Parent ASIN identified.
+
+**The extraction sequence and analysis framework are detailed in the companion document: `tool-call-flow.md`.**
+
+The output of this workshop will populate a complete Growth Machine dossier for your product:
+1. Keyword Gap Report (prioritised target list)
+2. Incrementality Matrix (cannibalisation vs. growth map)
+3. Blue Ocean Keywords (untapped opportunities)
+4. Unit Economics Dashboard (true margins per SKU)
+5. Inventory Health Status (throttle mode per SKU)
+6. Weekly Governance Baseline (starting snapshot for Week 1)
+

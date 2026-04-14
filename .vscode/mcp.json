@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "neonpanel": {
+      "type": "http",
+      "url": "https://mcp.neonpanel.com/mcp"
+    },
+    "marketplaceadpros": {
+      "type": "http",
+      "url": "https://app.marketplaceadpros.com/mcp"
+    }
+  }
+}

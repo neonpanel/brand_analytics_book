@@ -1,0 +1,339 @@
+# NeonPanel MCP Tool Call Flow
+## Complete Practical Sequence for the Growth Machine Workshop
+
+---
+
+## Tool Name Mapping: Original Plan → Real MCP Tools
+
+| # | Original (Fictional) Name | Real NeonPanel MCP Tool | Status |
+|---|---|---|---|
+| 1 | `get_search_query_performance` | `mcp_neonpanel_brand_analytics_analyze_search_query_performance` | ✅ Exists |
+| 2 | `get_search_catalog_performance` | `mcp_neonpanel_brand_analytics_analyze_search_catalog_performance` | ✅ Exists |
+| 3 | `get_sponsored_products_search_terms` | `mcp_neonpanel_advertising_analyze_search_terms` | ✅ Exists |
+| 4 | `get_advertising_performance_summary` | `mcp_neonpanel_advertising_analyze_campaign_performance` | ✅ Exists |
+| 5 | `get_sku_profitability` | `mcp_neonpanel_financials_analyze_profit_and_loss` | ✅ Closest match |
+| 6 | `get_landed_cost` | `mcp_neonpanel_cogs_get_inventory_landed_cost` | ✅ Exists |
+| 7 | `predict_stockout` | `mcp_neonpanel_supply_chain_list_stock_replenishment_risk_items` | ✅ Exists |
+
+### Additional Tools Not in Original Plan (Discovered)
+
+| Tool | Purpose | Used In Chapter |
+|---|---|---|
+| `mcp_neonpanel_brand_analytics_get_keyword_funnel_metrics` | Per-keyword funnel breakdown | Ch. 4 |
+| `mcp_neonpanel_brand_analytics_get_search_term_momentum` | Accelerating/declining keywords | Ch. 4, 6 |
+| `mcp_neonpanel_brand_analytics_get_competitive_landscape` | Top 3 products per keyword, weak leaders | Ch. 4, 5 |
+| `mcp_neonpanel_brand_analytics_get_conversion_leak_analysis` | Funnel leak diagnosis | Ch. 2, 4 |
+| `mcp_neonpanel_brand_analytics_get_cross_sell_opportunities` | Market basket / cross-sell | Ch. 6 |
+| `mcp_neonpanel_brand_analytics_analyze_repeat_purchases` | Repeat purchase behaviour | Ch. 9 |
+| `mcp_neonpanel_brand_analytics_list_ryg_thresholds` | Read RYG threshold config | Ch. 2 |
+| `mcp_neonpanel_brand_analytics_write_ryg_thresholds` | Customize RYG thresholds | Ch. 2 |
+| `mcp_neonpanel_account_lookup_asin_catalog` | Parent→Child ASIN mapping | Ch. 3 (setup) |
+| `mcp_neonpanel_account_list_companies` | List connected companies | Ch. 3 (setup) |
+| `mcp_neonpanel_supply_chain_list_fba_replenishment_candidates` | FBA restock needs | Ch. 8 |
+| `mcp_neonpanel_supply_chain_analyze_sales_velocity` | Unit velocity / burn rate | Ch. 8 |
+| `mcp_neonpanel_supply_chain_list_product_logistics_parameters` | Lead times per product | Ch. 8 |
+| `mcp_neonpanel_supply_chain_list_po_placement_candidates` | PO recommendations | Ch. 8 |
+| `mcp_neonpanel_supply_chain_shipment_arrival_oracle` | Inbound shipment tracking | Ch. 8 |
+| `mcp_neonpanel_cogs_analyze_fifo_cogs` | FIFO cost of goods analysis | Ch. 7 |
+| `mcp_neonpanel_inventory_list_items` | All inventory items | Ch. 3 |
+| `mcp_neonpanel_inventory_get_details` | Per-item inventory detail | Ch. 8 |
+| `mcp_neonpanel_forecasting_generate_sales_forecast` | Sales forecast generation | Ch. 8, 9 |
+
+---
+
+## PHASE 0: SETUP & ORIENTATION
+> Run once at the start of the workshop.
+
+### Step 0.1 — Identify your company
+```
+Tool: mcp_neonpanel_account_list_companies
+Goal: Get your company_id for all subsequent calls.
+```
+
+### Step 0.2 — Map your product family
+```
+Tool: mcp_neonpanel_account_lookup_asin_catalog
+Parameters: company_id, search by Parent ASIN or product name
+Goal: Get the Parent ASIN and all Child ASINs (variations).
+       Save these — every call below uses them.
+```
+
+### Step 0.3 — Check RYG thresholds
+```
+Tool: mcp_neonpanel_brand_analytics_list_ryg_thresholds
+Parameters: company_id
+Goal: See current Red/Yellow/Green threshold definitions.
+       Optionally customize with write_ryg_thresholds.
+```
+
+---
+
+## PHASE 1: MARKET & DISCOVERY DATA (Chapter 4, 5, 6)
+> The "Growth" input. Understand where the market is and where you stand.
+
+### Step 1.1 — Search Query Performance (SQP)
+```
+Tool: mcp_neonpanel_brand_analytics_analyze_search_query_performance
+Parameters: company_id, asin(s), reporting_range
+Goal: Get all keywords + Purchase Share + RYG classification.
+       This is the primary input for Keyword Gap Analysis (Ch. 4).
+Output: List of keywords with search volume, impression/click/cart/purchase share.
+```
+
+### Step 1.2 — Search Catalog Performance (SCP)
+```
+Tool: mcp_neonpanel_brand_analytics_analyze_search_catalog_performance
+Parameters: company_id, asin(s), reporting_range
+Goal: Full funnel view (Impressions → Clicks → Carts → Purchases).
+       Diagnose WHERE the funnel breaks (Ch. 2).
+Output: Funnel metrics per ASIN, conversion rates at each stage.
+```
+
+### Step 1.3 — Keyword Funnel Deep-Dive
+```
+Tool: mcp_neonpanel_brand_analytics_get_keyword_funnel_metrics
+Parameters: company_id, asin(s), specific keywords from Step 1.1
+Goal: Per-keyword funnel breakdown for gap keywords.
+       See exactly where you lose on each target keyword (Ch. 4).
+```
+
+### Step 1.4 — Search Term Momentum
+```
+Tool: mcp_neonpanel_brand_analytics_get_search_term_momentum
+Parameters: company_id, asin(s)
+Goal: Identify accelerating vs. declining keywords.
+       Prioritize growing keywords, deprioritize declining ones (Ch. 4, 6).
+Output: Momentum signals (accelerating / stable / declining) per keyword.
+```
+
+### Step 1.5 — Competitive Landscape
+```
+Tool: mcp_neonpanel_brand_analytics_get_competitive_landscape
+Parameters: company_id, asin(s)
+Goal: See Top 3 products on each keyword + weak leader detection.
+       Determine contestability of gap keywords (Ch. 4, 5).
+Output: Leader purchase share, competitive density, weak-leader flags.
+```
+
+### Step 1.6 — Conversion Leak Analysis
+```
+Tool: mcp_neonpanel_brand_analytics_get_conversion_leak_analysis
+Parameters: company_id, asin(s)
+Goal: Diagnose funnel leaks (impression→click, click→cart, cart→purchase).
+       Feeds listing optimization priorities (Ch. 2, 4).
+```
+
+---
+
+## PHASE 2: ADVERTISING DATA (Chapter 5, 6)
+> The "Enrichment" input. Understand what you're paying for and its incremental value.
+
+### Step 2.1 — PPC Search Terms
+```
+Tool: mcp_neonpanel_advertising_analyze_search_terms
+Parameters: company_id, profile_id, date range, optional asin filter
+Goal: Get all PPC search terms with spend, clicks, sales, CPC.
+       Cross-reference with SQP for Incrementality Check (Ch. 5).
+       Find Blue Oceans by comparing vs. SQP keywords (Ch. 6).
+Output: Search term performance including attributed sales, CPC, conversion rate.
+```
+
+### Step 2.2 — Campaign Performance
+```
+Tool: mcp_neonpanel_advertising_analyze_campaign_performance
+Parameters: company_id, profile_id, date range
+Goal: Campaign-level metrics: spend, sales, ACoS, TACoS.
+       Calculate overall advertising efficiency (Ch. 5).
+Output: Campaign breakdown with TACoS, ROAS, spend trends.
+```
+
+### Step 2.3 — Cross-Sell Opportunities
+```
+Tool: mcp_neonpanel_brand_analytics_get_cross_sell_opportunities
+Parameters: company_id, asin(s)
+Goal: Find keywords where buyers of related products also purchase yours.
+       Discover untapped keyword channels (Ch. 6).
+```
+
+---
+
+## PHASE 3: OPERATIONS & PROFITABILITY (Chapter 7, 8)
+> The "Engine" input. Know your true costs and inventory constraints.
+
+### Step 3.1 — Landed Cost
+```
+Tool: mcp_neonpanel_cogs_get_inventory_landed_cost
+Parameters: company_id, sku(s) or asin(s)
+Goal: Get per-unit landed cost (manufacturing + freight + duties).
+       Calculate True Contribution Margin (Ch. 7).
+Output: Landed cost breakdown per SKU.
+```
+
+### Step 3.2 — FIFO COGS Analysis
+```
+Tool: mcp_neonpanel_cogs_analyze_fifo_cogs
+Parameters: company_id, date range
+Goal: Understand how COGS changes as different batches sell through.
+       More accurate margin tracking (Ch. 7).
+```
+
+### Step 3.3 — Profit & Loss
+```
+Tool: mcp_neonpanel_financials_analyze_profit_and_loss
+Parameters: company_id, date range
+Goal: Full P&L view: revenue, FBA fees, commissions, ad spend, COGS, net margin.
+       Validate True Contribution Margin at product level (Ch. 7).
+```
+
+### Step 3.4 — Stock Replenishment Risk
+```
+Tool: mcp_neonpanel_supply_chain_list_stock_replenishment_risk_items
+Parameters: company_id
+Goal: Identify SKUs at risk of stockout.
+       Determine Marketing Throttle mode per SKU (Ch. 8).
+Output: Days of supply, risk level, restock urgency per item.
+```
+
+### Step 3.5 — FBA Replenishment Candidates
+```
+Tool: mcp_neonpanel_supply_chain_list_fba_replenishment_candidates
+Parameters: company_id
+Goal: See what needs to be shipped to FBA now (Ch. 8).
+```
+
+### Step 3.6 — Sales Velocity
+```
+Tool: mcp_neonpanel_supply_chain_analyze_sales_velocity
+Parameters: company_id, asin(s)
+Goal: Current unit velocity and burn rate.
+       Validate the Days of Supply calculation (Ch. 8).
+```
+
+### Step 3.7 — Logistics Lead Times
+```
+Tool: mcp_neonpanel_supply_chain_list_product_logistics_parameters
+Parameters: company_id
+Goal: Lead time per product (manufacturing + transit + receiving).
+       Calculate Last Possible Launch Date (Ch. 8).
+```
+
+### Step 3.8 — PO Placement Candidates
+```
+Tool: mcp_neonpanel_supply_chain_list_po_placement_candidates
+Parameters: company_id
+Goal: Recommended purchase orders to place now (Ch. 8).
+```
+
+### Step 3.9 — Inbound Shipment Tracking
+```
+Tool: mcp_neonpanel_supply_chain_shipment_arrival_oracle
+Parameters: company_id
+Goal: Track inbound shipments — when will stock arrive? (Ch. 8)
+```
+
+---
+
+## PHASE 4: SYNTHESIS & GOVERNANCE BASELINE (Chapter 9, 10)
+> Combine all data into the Growth Machine dossier.
+
+### Step 4.1 — Generate Sales Forecast
+```
+Tool: mcp_neonpanel_forecasting_generate_sales_forecast
+Parameters: company_id, asin(s), horizon
+Goal: Forward-looking demand forecast to validate inventory planning.
+```
+
+### Step 4.2 — Repeat Purchase Analysis
+```
+Tool: mcp_neonpanel_brand_analytics_analyze_repeat_purchases
+Parameters: company_id, asin(s)
+Goal: Understand repeat purchase rates and customer retention.
+       Input for lifetime value calculations.
+```
+
+### Step 4.3 — Historical Reports (for Week-over-Week baseline)
+```
+Tool: mcp_neonpanel_account_list_reports
+Parameters: company_id
+Goal: List available historical reports.
+
+Tool: mcp_neonpanel_account_get_report_details
+Parameters: report_id
+Goal: Pull specific report data for WoW comparison.
+```
+
+---
+
+## EXECUTION SEQUENCE SUMMARY
+
+```
+PHASE 0: Setup (run once)
+  0.1 list_companies
+  0.2 lookup_asin_catalog
+  0.3 list_ryg_thresholds
+       │
+PHASE 1: Market Data (parallel where possible)
+  ├── 1.1 analyze_search_query_performance
+  ├── 1.2 analyze_search_catalog_performance
+  ├── 1.4 get_search_term_momentum
+  ├── 1.5 get_competitive_landscape
+  └── 1.6 get_conversion_leak_analysis
+       │
+  1.3 get_keyword_funnel_metrics  ← depends on 1.1 output (specific keywords)
+       │
+PHASE 2: Advertising Data (parallel)
+  ├── 2.1 analyze_search_terms
+  ├── 2.2 analyze_campaign_performance
+  └── 2.3 get_cross_sell_opportunities
+       │
+PHASE 3: Operations (parallel)
+  ├── 3.1 get_inventory_landed_cost
+  ├── 3.2 analyze_fifo_cogs
+  ├── 3.3 analyze_profit_and_loss
+  ├── 3.4 list_stock_replenishment_risk_items
+  ├── 3.5 list_fba_replenishment_candidates
+  ├── 3.6 analyze_sales_velocity
+  ├── 3.7 list_product_logistics_parameters
+  ├── 3.8 list_po_placement_candidates
+  └── 3.9 shipment_arrival_oracle
+       │
+PHASE 4: Synthesis (sequential)
+  4.1 generate_sales_forecast
+  4.2 analyze_repeat_purchases
+  4.3 list_reports → get_report_details
+       │
+  ▼ OUTPUT: Complete Growth Machine Dossier
+```
+
+---
+
+## DEPENDENCY GRAPH
+
+```
+list_companies ──→ lookup_asin_catalog ──┬──→ PHASE 1 (all)
+                                          ├──→ PHASE 2 (all)
+                                          └──→ PHASE 3 (all)
+
+PHASE 1.1 (SQP) ──→ 1.3 (keyword funnel — needs specific keywords from SQP)
+
+PHASE 1 + PHASE 2 ──→ CROSS-REFERENCE for:
+  • Keyword Gap Report (SQP keywords missing from PPC)
+  • Incrementality Matrix (SQP share vs PPC attributed clicks)
+  • Blue Ocean List (SQP high-volume + PPC zero-spend)
+
+PHASE 3.1 (landed cost) + 3.3 (P&L) ──→ True Contribution Margin
+PHASE 3.4 (risk items) + 3.6 (velocity) ──→ Marketing Throttle Mode
+PHASE 3.7 (lead times) + 3.4 (stockout risk) ──→ Last Launch Date
+```
+
+---
+
+## NOTES
+
+- **All tools require `company_id`** — get it from Step 0.1 first.
+- **Most brand analytics tools require ASIN(s)** — get from Step 0.2.
+- **Advertising tools require `profile_id`** — may need `list_selling_partner_accounts` or similar.
+- **Phase 1 and Phase 2 are independent** — can run in parallel.
+- **Phase 3 is independent of Phases 1 and 2** — all three phases can run in parallel after Phase 0.
+- **Phase 4 (synthesis) depends on all prior phases** — run last.
+- **The cross-referencing (Gap, Incrementality, Blue Ocean) is done by the AI agent** in post-processing, not by individual tools.

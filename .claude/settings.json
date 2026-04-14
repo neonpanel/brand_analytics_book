@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "neonpanel": {
+      "type": "sse",
+      "url": "https://mcp.neonpanel.com/mcp"
+    }
+  }
+}

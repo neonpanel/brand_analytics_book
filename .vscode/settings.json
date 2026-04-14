@@ -1,0 +1,8 @@
+{
+  "mcp.servers": {
+    "neonpanel": {
+      "type": "http",
+      "url": "https://mcp.neonpanel.com/mcp"
+    }
+  }
+}
